@@ -1,0 +1,151 @@
+.calendar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 0;
+    color: #3f51b5;
+  }
+
+  .user-controls {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-right: 20px;
+      font-weight: 500;
+    }
+  }
+}
+
+.calendar-card {
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h2 {
+      margin: 0;
+      text-align: center;
+    }
+  }
+}
+
+.calendar-grid {
+  display: flex;
+  min-height: 600px;
+  overflow-x: auto;
+
+  .time-column {
+    min-width: 80px;
+    border-right: 1px solid #ddd;
+    
+    .time-header {
+      height: 50px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .time-slot {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #ddd;
+      font-weight: 500;
+      color: #666;
+    }
+  }
+
+  .day-column {
+    flex: 1;
+    min-width: 150px;
+    border-right: 1px solid #ddd;
+    
+    &:last-child {
+      border-right: none;
+    }
+    
+    .day-header {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #ddd;
+      font-weight: 500;
+      background-color: #f5f5f5;
+    }
+
+    .time-cell {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      
+      &:hover {
+        background-color: #e8eaf6;
+      }
+      
+      &.reserved {
+        background-color: #c8e6c9;
+        cursor: default;
+        font-weight: 500;
+        color: #2e7d32;
+        border: 1px solid #81c784;
+        
+        &:hover {
+          background-color: #a5d6a7;
+        }
+      }
+      
+      &.event {
+        background-color: #ffcdd2;
+        cursor: default;
+        font-weight: 500;
+        color: #c62828;
+        border: 1px solid #e57373;
+        
+        &:hover {
+          background-color: #ef9a9a;
+        }
+      }
+    }
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 10px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    
+    h1 {
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+    }
+  }
+
+  .calendar-grid {
+    .day-column {
+      min-width: 120px;
+    }
+  }
+}

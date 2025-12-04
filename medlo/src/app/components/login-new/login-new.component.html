@@ -1,0 +1,51 @@
+<div class="login-container">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Üniversite Spor Salonu Rezervasyon Sistemi</mat-card-title>
+      <div class="server-status" *ngIf="serverStatusChecked">
+        <span class="status-dot" [ngClass]="{'connected': serverConnected, 'disconnected': !serverConnected}"></span>
+        <span class="status-text">Server: {{ serverConnected ? 'Bağlı' : 'Bağlantı Yok' }}</span>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Kullanıcı Adı</mat-label>
+          <input matInput formControlName="username" required>
+          <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+            Kullanıcı adı zorunludur
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-label>Şifre</mat-label>
+          <input matInput type="password" formControlName="password" required>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Şifre zorunludur
+          </mat-error>
+        </mat-form-field>
+
+        <div class="error-message" *ngIf="error">
+          {{ error }}
+        </div>
+        
+        <div class="demo-info" [class.highlight]="error.includes('Server is unreachable')">
+          <h3>Demo Kullanıcılar (Her Zaman Çalışır):</h3>
+          <ul>
+            <li><strong>Admin Girişi:</strong> Kullanıcı: <strong>admin</strong> / Şifre: <strong>admin123</strong></li>
+            <li><strong>Öğretim Üyesi:</strong> Kullanıcı: <strong>faculty</strong> / Şifre: <strong>faculty123</strong></li>
+            <li><strong>Test Kullanıcısı:</strong> Kullanıcı: <strong>test</strong> / Şifre: <strong>test123</strong></li>
+          </ul>
+          <p *ngIf="error.includes('Server is unreachable')" class="server-warning">
+            <mat-icon>warning</mat-icon> Backend sunucusu şu anda ulaşılamıyor. Lütfen demo bilgilerini kullanın.
+          </p>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="full-width">
+          <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+          <span *ngIf="!isLoading">Giriş Yap</span>
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

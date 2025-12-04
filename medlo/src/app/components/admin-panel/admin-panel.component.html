@@ -1,0 +1,152 @@
+<div class="admin-container">
+  <div class="header">
+    <h1>Spor Salonu Yönetim Paneli</h1>
+    <div class="user-controls">
+      <span>Hoş geldiniz, {{ currentUser?.username }}</span>
+      <button mat-raised-button color="warn" (click)="logout()">Çıkış Yap</button>
+    </div>
+  </div>
+
+  <div class="admin-tabs">
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab label="Tüm Rezervasyonlar">
+        <div class="tab-content">
+          <mat-card>
+            <mat-card-content>
+              <div *ngIf="isLoading" class="loading-spinner">
+                <mat-spinner diameter="40"></mat-spinner>
+              </div>
+              
+              <table mat-table [dataSource]="reservations" class="mat-elevation-z8" *ngIf="!isLoading">
+                <!-- ID Column -->
+                <ng-container matColumnDef="id">
+                  <th mat-header-cell *matHeaderCellDef> ID </th>
+                  <td mat-cell *matCellDef="let reservation"> {{reservation.id | slice:0:8}}... </td>
+                </ng-container>
+
+                <!-- User Column -->
+                <ng-container matColumnDef="username">
+                  <th mat-header-cell *matHeaderCellDef> Kullanıcı </th>
+                  <td mat-cell *matCellDef="let reservation"> {{reservation.username || 'Bilinmiyor'}} </td>
+                </ng-container>
+
+                <!-- Start Time Column -->
+                <ng-container matColumnDef="startTime">
+                  <th mat-header-cell *matHeaderCellDef> Başlangıç </th>
+                  <td mat-cell *matCellDef="let reservation"> {{reservation.startTime | date:'dd/MM/yyyy HH:mm'}} </td>
+                </ng-container>
+
+                <!-- End Time Column -->
+                <ng-container matColumnDef="endTime">
+                  <th mat-header-cell *matHeaderCellDef> Bitiş </th>
+                  <td mat-cell *matCellDef="let reservation"> {{reservation.endTime | date:'dd/MM/yyyy HH:mm'}} </td>
+                </ng-container>
+
+                <!-- Type Column -->
+                <ng-container matColumnDef="type">
+                  <th mat-header-cell *matHeaderCellDef> Tür </th>
+                  <td mat-cell *matCellDef="let reservation"> 
+                    <span [ngClass]="{'event-badge': reservation.type === 'Event', 'training-badge': reservation.type === 'Training'}">
+                      {{reservation.type === 'Event' ? 'Etkinlik' : 'Antrenman'}}
+                    </span>
+                  </td>
+                </ng-container>
+
+                <!-- Actions Column -->
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef> İşlemler </th>
+                  <td mat-cell *matCellDef="let reservation">
+                    <button mat-icon-button color="warn" (click)="deleteReservation(reservation)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+              
+              <div *ngIf="!isLoading && reservations.length === 0" class="no-data">
+                Rezervasyon bulunamadı.
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Etkinlik Ekle">
+        <div class="tab-content">
+          <mat-card>
+            <mat-card-header>
+              <mat-card-title>Yeni Etkinlik Oluştur</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+              <form [formGroup]="eventForm" (ngSubmit)="createEvent()">
+                <mat-form-field appearance="fill" class="form-field">
+                  <mat-label>Tarih</mat-label>
+                  <input matInput [matDatepicker]="picker" formControlName="date">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <mat-error *ngIf="eventForm.get('date')?.hasError('required')">
+                    Tarih seçimi zorunludur
+                  </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="fill" class="form-field">
+                  <mat-label>Başlangıç Saati</mat-label>
+                  <mat-select formControlName="startHour">
+                    <mat-option [value]="8">8:00</mat-option>
+                    <mat-option [value]="9">9:00</mat-option>
+                    <mat-option [value]="10">10:00</mat-option>
+                    <mat-option [value]="11">11:00</mat-option>
+                    <mat-option [value]="12">12:00</mat-option>
+                    <mat-option [value]="13">13:00</mat-option>
+                    <mat-option [value]="14">14:00</mat-option>
+                    <mat-option [value]="15">15:00</mat-option>
+                    <mat-option [value]="16">16:00</mat-option>
+                    <mat-option [value]="17">17:00</mat-option>
+                    <mat-option [value]="18">18:00</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="eventForm.get('startHour')?.hasError('required')">
+                    Başlangıç saati seçimi zorunludur
+                  </mat-error>
+                </mat-form-field>
+                
+                <mat-form-field appearance="fill" class="form-field">
+                  <mat-label>Süre (Saat)</mat-label>
+                  <mat-select formControlName="duration">
+                    <mat-option [value]="1">1 Saat</mat-option>
+                    <mat-option [value]="2">2 Saat</mat-option>
+                    <mat-option [value]="3">3 Saat</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="eventForm.get('duration')?.hasError('required')">
+                    Süre seçimi zorunludur
+                  </mat-error>
+                </mat-form-field>
+
+                <div class="form-actions">
+                  <button mat-raised-button color="primary" type="submit" [disabled]="eventForm.invalid || isSubmitting">
+                    <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+                    <span *ngIf="!isSubmitting">Etkinlik Oluştur</span>
+                  </button>
+                </div>
+              </form>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<ng-template #confirmDialog let-data>
+  <h2 mat-dialog-title>Silme Onayı</h2>
+  <mat-dialog-content>
+    Bu rezervasyonu silmek istediğinize emin misiniz?
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>İptal</button>
+    <button mat-raised-button color="warn" [mat-dialog-close]="true" cdkFocusInitial>Sil</button>
+  </mat-dialog-actions>
+</ng-template>

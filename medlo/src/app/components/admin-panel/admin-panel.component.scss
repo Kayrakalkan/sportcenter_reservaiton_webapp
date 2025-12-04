@@ -1,0 +1,112 @@
+.admin-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h1 {
+    margin: 0;
+    color: #3f51b5;
+  }
+
+  .user-controls {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-right: 20px;
+      font-weight: 500;
+    }
+  }
+}
+
+.admin-tabs {
+  .tab-content {
+    padding: 20px 0;
+  }
+}
+
+table {
+  width: 100%;
+}
+
+.mat-column-actions {
+  width: 80px;
+  text-align: center;
+}
+
+.event-badge, .training-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.event-badge {
+  background-color: #ffcdd2;
+  color: #c62828;
+}
+
+.training-badge {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 30px 0;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+  font-style: italic;
+}
+
+.form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.form-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    min-width: 150px;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 10px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    
+    h1 {
+      margin-bottom: 10px;
+      font-size: 1.5rem;
+    }
+    
+    .user-controls {
+      margin-top: 10px;
+    }
+  }
+  
+  .mat-column-id, .mat-column-endTime {
+    display: none;
+  }
+}

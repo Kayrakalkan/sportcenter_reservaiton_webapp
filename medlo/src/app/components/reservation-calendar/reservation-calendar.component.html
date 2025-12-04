@@ -1,0 +1,67 @@
+<div class="calendar-container">
+  <div class="header">
+    <h1>Spor Salonu Rezervasyon Takvimi</h1>
+    <div class="user-controls">
+      <span>Hoş geldiniz, {{ currentUser?.username }}</span>
+      <button mat-raised-button color="warn" (click)="logout()">Çıkış Yap</button>
+    </div>
+  </div>
+
+  <mat-card class="calendar-card">
+    <mat-card-content>
+      <div class="calendar-header">
+        <button mat-icon-button (click)="previousWeek()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <h2>{{ currentWeekStart | date:'d MMM' }} - {{ currentWeekEnd | date:'d MMM, y' }}</h2>
+        <button mat-icon-button (click)="nextWeek()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <div class="calendar-grid">
+        <!-- Weekday Headers -->
+        <div class="time-column">
+          <div class="time-header"></div>
+          <div class="time-slot" *ngFor="let hour of hours">
+            {{ hour }}
+          </div>
+        </div>
+
+        <!-- Days -->
+        <div class="day-column" *ngFor="let day of weekDays">
+          <div class="day-header">{{ day.date | date:'EEE' }}</div>
+          <div class="time-cell" *ngFor="let hour of hours; let i = index" 
+               [ngClass]="{
+                 'reserved': isReserved(day.date, hour),
+                 'event': isEvent(day.date, hour),
+                 'available': !isReserved(day.date, hour) && !isEvent(day.date, hour)
+               }"
+               (click)="selectTimeSlot(day.date, hour)">
+            <span *ngIf="isReserved(day.date, hour) || isEvent(day.date, hour)">
+              {{ getReservationDetails(day.date, hour) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Reservation Dialog -->
+<ng-template #reservationDialog>
+  <h2 mat-dialog-title>Rezervasyon Yap</h2>
+  <mat-dialog-content>
+    <p><strong>Tarih:</strong> {{ selectedDate | date:'fullDate' }}</p>
+    <p><strong>Saat:</strong> {{ selectedTime }}</p>
+    <div *ngIf="isLoading" class="loading-indicator">
+      <mat-spinner diameter="40"></mat-spinner>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close [disabled]="isLoading">İptal</button>
+    <button mat-raised-button color="primary" (click)="confirmReservation()" cdkFocusInitial [disabled]="isLoading">
+      Rezervasyon Yap
+    </button>
+  </mat-dialog-actions>
+</ng-template>

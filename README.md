@@ -147,7 +147,7 @@ INSERT INTO "Users" ("Id", "Username", "Password", "Role") VALUES
 
 **Kayra Kalkan**  
  GitHub: [@Kayrakalkan](https://github.com/Kayrakalkan)  
-� Email: kayrakalkan@example.com  
+� Email: kayrakalkan@gmail.com  
 
 ---
 
